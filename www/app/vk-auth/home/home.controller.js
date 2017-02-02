@@ -1,7 +1,9 @@
-'use strict';
+(function() {
+	'use strict';
 
-app.controller("HomeCtrl", ["$scope",
-    function ($scope) {
-		$scope.object = "";
-    }
-]);
+	app.controller("HomeCtrl", ["$scope",
+		function ($scope) {
+			$scope.object = "";
+		}
+	]);
+})();
