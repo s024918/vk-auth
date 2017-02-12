@@ -1,0 +1,143 @@
+<div class="container">
+	<div class="panel panel-default standart-margin">
+		<div class="panel-body">
+			<tabset>
+                <tab>
+                    <tab-heading>Main</tab-heading>
+					<h1 class="text-center">Start a new lecture</h1>
+					<h4 class="text-center">You may use filters to find your intresting material faster.</h4>
+					<div class="container">
+						<div class="col-md-4">
+							<label class="control-label">Programming language</label>
+							<input type="text" ng-model="email" class="form-control" />
+						</div>
+						<div class="col-md-4">
+							<label class="control-label">Teacher</label>
+							<input type="text" ng-model="email" class="form-control" />
+						</div>
+						<div class="col-md-4">
+							<label class="control-label">Level</label>
+							<input type="text" ng-model="email" class="form-control" />
+						</div>
+					</div>
+					<div class="container bordered text-center">
+						<div class="col-md-4">
+							<h4>Javascript</h4>
+							<div class="grey-anchor">Teacher Name</div>
+						</div>
+						<div class="col-md-4">
+							<h5>Very basical lecture about Javascript language.</h5>
+							<div class="green-anchor">BEGINNER COURSE</div>
+							<div>Left: 10/30 | 10 min. spent</div>
+						</div>
+						<div class="col-md-4">
+							<h5></h5>
+							<input type="submit" class="btn btn-primary btn-big" value="Start" />
+						</div>
+					</div>
+				</tab>
+				<tab>
+                    <tab-heading>Profile</tab-heading>
+					<div class="container">
+						<div class="col-sm-3 col-md-3">
+							<h4>Student</h4>
+							<h5>Petras Petrauskas</h5>
+							<div>
+								<a ng-click="profileFieldset = 'change_personal_info'">Change personal info</a>
+							</div>
+							<div>
+								<a ng-click="profileFieldset = 'change_password'">Change password</a>
+							</div>
+						</div>
+						<div class="col-sm-9 col-md-9">
+							<div ng-show="profileFieldset === 'account_information'">
+								<h4>Account information</h4>
+								<div class="container" style="margin-left: -30px;">
+									<div class="col-md-6">
+										<div>Last login: 2017-02-12 19:00</div>
+									</div>
+									<div class="col-md-6">
+										<div>Account created: 2017-02-11 14:00</div>
+									</div>
+								</div>
+								<div class="container" style="margin-left: -30px;">
+									<div class="col-md-6">
+										<b>Unfinished lessons: 1</b>
+									</div>
+									<div class="col-md-6">
+										<b>Finished lessons: 10</b>
+									</div>
+								</div>
+								<h4 style="margin-top: 15px;">Statistics</h4>
+								<div class="container" style="margin-left: -30px;">
+									<div class="col-md-6">
+										<b>BIG statistics</b>
+									</div>
+									<div class="col-md-6">
+										<b>BIG statistics</b>
+									</div>
+								</div>
+							</div>
+							<div ng-show="profileFieldset === 'change_password'">
+								<h4>Change password</h4>
+								<div class="container form-horizontal" style="margin-left: -15px;">
+									<div class="form-group">
+										<b class="col-md-3 control-label">Old password</b>
+										<div class="col-md-9">
+											<input type="password" ng-model="password" class="form-control" />
+										</div>
+									</div>
+									<div class="form-group">
+										<b class="col-md-3 control-label">New password</b>
+										<div class="col-md-9">
+											<input type="password" ng-model="password" class="form-control" />
+										</div>
+									</div>
+									<div class="form-group">
+										<b class="col-md-3 control-label">Confirm password</b>
+										<div class="col-md-9">
+											<input type="password" ng-model="password" class="form-control" />
+										</div>
+									</div>
+									<div class="form-group col-md-12">
+										<input type="submit" class="btn btn-default" value="Change" ng-click="" />
+										<input type="submit" class="btn btn-default" value="Back" ng-click="profileFieldset = 'account_information'" />
+									</div>
+								</div>
+							</div>
+							<div ng-show="profileFieldset === 'change_personal_info'">
+								<h4>Change password</h4>
+								<div class="container form-horizontal" style="margin-left: -15px;">
+									<div class="form-group">
+										<b class="col-md-3 control-label">Name</b>
+										<div class="col-md-9">
+											<input type="password" ng-model="password" class="form-control" />
+										</div>
+									</div>
+									<div class="form-group">
+										<b class="col-md-3 control-label">Last name</b>
+										<div class="col-md-9">
+											<input type="password" ng-model="password" class="form-control" />
+										</div>
+									</div>
+									<div class="form-group">
+										<b class="col-md-3 control-label">Email</b>
+										<div class="col-md-9">
+											<input type="password" ng-model="password" class="form-control" />
+										</div>
+									</div>
+									<div class="form-group col-md-12">
+										<input type="submit" class="btn btn-default" value="Change" ng-click="" />
+										<input type="submit" class="btn btn-default" value="Back" ng-click="profileFieldset = 'account_information'" />
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</tab>
+			</tabset>
+		</div>
+	</div>
+</div>
+
+

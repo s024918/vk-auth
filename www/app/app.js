@@ -17,6 +17,11 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
         controller: "RegisterCtrl",
         templateUrl: "App/vk-auth/register/register.html"
     });
+	
+	$routeProvider.when("/user/main", {
+        controller: "UserMainCtrl",
+        templateUrl: "App/vk-auth/user/main/main.html"
+    });
 
     $routeProvider.otherwise({
         controller: "404Ctrl",
