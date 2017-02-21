@@ -160,7 +160,7 @@ expressServer.post('/api/setRestfulAuth', passport.authenticate('local'), functi
 	//console.log(req.user);
 	console.log(req.isAuthenticated());
 	var cookies = parseCookies(req);
-	console.log("cookies " + req.headers);
+	console.log("cookies " + req.session);
 	//request.headers.authorization = value; kaip realizuoti sita nesamone
 	res.json(req.user);
 });
