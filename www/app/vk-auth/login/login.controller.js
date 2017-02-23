@@ -1,8 +1,8 @@
 (function() {
 	'use strict';
 
-	app.controller("LoginCtrl", ["$scope", "$location", "httpService",
-		function ($scope, $location, httpService) {
+	app.controller("LoginCtrl", ["$scope", "$rootScope", "$location", "httpService", "localStorageService",
+		function ($scope, $rootScope, $location, httpService, localStorageService) {
 			$scope.email = null;
 			$scope.password = null;
 			
@@ -15,9 +15,15 @@
 				};
 				
 				var promisePost = httpService.post("login", account);
-
-				promisePost.then(function (data) {
-					console.log(data);
+				promisePost.then(function (response) {
+					if (response.data.token.isAuthenticated === "false") {
+						$rootScope.user = null;
+						localStorageService.set('vk-auth', null);
+						return;
+					}
+					
+					$rootScope.user = response.data.token;
+					localStorageService.set('vk-auth', response.data.token);
 					$location.path('/user/main');
 				},
 				function (error) {

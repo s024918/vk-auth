@@ -1,16 +1,16 @@
 (function() {
 	'use strict';
 
-	app.controller("UserMainCtrl", ["$scope", "$location", "httpService",
-		function ($scope, $location, httpService) {
-			var promiseGet = httpService.getRaw("http://localhost:8002/api/auth");
+	app.controller("UserMainCtrl", ["$scope", "$location", "httpService", "localStorageService", "$http",
+		function ($scope, $location, httpService, localStorageService, $http) {
+			
+            var config = {
+                params: {
+					businessLogic: 123,
+				}
+            };
 
-				promiseGet.then(function (data) {
-					console.log(data);
-				},
-				function (error) {
-					$scope.errors = error;
-				});
+            httpService.getWithAuth("/api/login", config);
 			
 			$scope.profileFieldset = "account_information";
 		}

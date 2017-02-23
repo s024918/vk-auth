@@ -1,6 +1,10 @@
 'use strict';
 
-var app = angular.module('vk-auth', ['ngRoute', 'ui.bootstrap']);
+var app = angular.module('vk-auth', ['ngRoute', 'ui.bootstrap', 'LocalStorageModule']);
+
+app.run(["$rootScope", "localStorageService", function ($rootScope, localStorageService) {
+    $rootScope.user = localStorageService.get('vk-auth');
+}]);
 
 app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
     $routeProvider.when("/", {
@@ -11,6 +15,11 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
 	$routeProvider.when("/login", {
         controller: "LoginCtrl",
         templateUrl: "App/vk-auth/login/login.html"
+    });
+	
+	$routeProvider.when("/user/logout", {
+        controller: "LogoutCtrl",
+		templateUrl: "App/vk-auth/logout/logout.html"
     });
 	
 	$routeProvider.when("/register", {

@@ -1,10 +1,8 @@
 (function() {
 	'use strict';
 
-	app.controller("RegisterCtrl", ["$scope", "httpService",
-		function ($scope, httpService) {
-			$scope.myScope = 50001;
-			
+	app.controller("RegisterCtrl", ["$scope", "httpService", "$location",
+		function ($scope, httpService, $location) {
 			$scope.submitRegister = function () {
 				$scope.errors = [];
 				
@@ -17,10 +15,8 @@
 				};
 				
 				var promisePost = httpService.post("register", account);
-
 				promisePost.then(function (data) {
-					console.log(data);
-					//$location.path('/user/profile');
+					$location.path('/login');
 				},
 				function (error) {
 					$scope.errors = error;
