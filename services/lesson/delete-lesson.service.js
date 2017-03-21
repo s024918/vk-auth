@@ -3,7 +3,7 @@ var constants = require(__dirname + '/../../app.constants');
 var jwt = require('jsonwebtoken');
 
 module.exports = function (app, sequelize, models) {
-	app.post('/api/publish-lesson', function(req, res) {
+	app.post('/api/delete-lesson', function(req, res) {
 		var model = {};
 		
 		var soapClientCallback = function (param) {
@@ -21,11 +21,11 @@ module.exports = function (app, sequelize, models) {
 						model.token.key = jwt.sign(model.token.key, constants.SECRET_KEY);
 						
 						models.Lesson
-						.update({
-							isPublished: param.publishState
-						},
-						{ where: { id: param.id, userId: user.id } })
-						.then(function(lesson) {
+						.destroy({
+							where: { id: param.id }
+						})
+						.then(function(isDeleted) {
+							model.isDeleted = isDeleted;
 							res.json(model);
 						});
 					

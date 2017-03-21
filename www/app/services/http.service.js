@@ -32,11 +32,10 @@
 						scope.data = data;
 					});
 			};
-			this.postWithAuth = function (controllerApi, config, scope, scopeData) {
+			this.postWithAuth = function (controllerApi, config, callback) {
 				config.token = JSON.stringify(localStorageService.get("vk-auth"));
 				$http.post(controllerApi, config)
 					.success(function (data, status, headers, config) {
-						scopeData = data;
 						if (!data || !data.token || !data.token.isAuthenticated) {
 							$rootScope.user = null;
 							localStorageService.set("vk-auth", null);
@@ -44,12 +43,12 @@
 						}
 						else {
 							localStorageService.set("vk-auth", data.token);
-							scope.authSuccessCallback();
+							callback(true, data);
 						}
 					})
 					.error(function (data, status, header, config) {
 						console.log("Nereikia taip daryti...");
-						scopeData = data;
+						callback(false, data);
 					});
 			};
 			this.post = function (controllerApi, item) {

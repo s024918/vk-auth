@@ -34,6 +34,9 @@ Promise.resolve(orm).then(function(instance) {
 	var initPublishLessonService = require('./services/lesson/publish-lesson.service');
 	initPublishLessonService(app, instance.sequelize, instance.models);
 	
+	var initDeleteLessonService = require('./services/lesson/delete-lesson.service');
+	initDeleteLessonService(app, instance.sequelize, instance.models);
+	
 	var initStartTopicService = require('./services/topic/start-topic.service');
 	initStartTopicService(app, instance.sequelize, instance.models);
 });

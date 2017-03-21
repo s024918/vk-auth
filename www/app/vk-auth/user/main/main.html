@@ -59,9 +59,9 @@
 							</div>
 							<div class="col-md-6 text-right">
 								<h5></h5>
-								<input type="submit" class="btn btn-primary btn-big" value="{{lesson.isPublished ? 'Unpublish' : 'Publish'}}" ng-click="setLessonPublishState(lesson.id, !lesson.isPublished)" />
+								<input type="submit" class="btn btn-primary btn-big" value="{{lesson.isPublished ? 'Unpublish' : 'Publish'}}" ng-click="setLessonPublishState(lesson)" />
 								<input type="submit" class="btn btn-primary btn-big" value="Edit" ng-click="" />
-								<input type="submit" class="btn btn-primary btn-big" value="Delete" ng-click="" />
+								<input type="submit" class="btn btn-primary btn-big" value="Delete" ng-click="deleteLesson(lesson)" />
 							</div>
 						</div>
 				</tab>
