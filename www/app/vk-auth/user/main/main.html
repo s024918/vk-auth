@@ -2,7 +2,7 @@
 	<div class="panel panel-default standart-margin">
 		<div class="panel-body">
 			<tabset>
-                <tab>
+                <tab ng-init="getStudentMain()" ng-click="getStudentMain()">
                     <tab-heading>Main</tab-heading>
 					<h1 class="text-center">Start a new lecture</h1>
 					<h4 class="text-center">You may use filters to find your intresting material faster.</h4>
@@ -20,28 +20,57 @@
 							<input type="text" ng-model="email" class="form-control" />
 						</div>
 					</div>
-					<div class="container bordered text-center">
+					<div class="container bordered text-center" ng-repeat="lesson in data.lessons">
 						<div class="col-md-4">
-							<h4>Javascript</h4>
-							<div class="grey-anchor">Teacher Name</div>
+							<h4 ng-bind="::lesson.programmingLanguage"></h4>
+							<div class="grey-anchor" ng-bind="::lesson.teacher"></div>
 						</div>
 						<div class="col-md-4">
-							<h5>Very basical lecture about Javascript language.</h5>
-							<div class="green-anchor">BEGINNER COURSE</div>
+							<h4 ng-bind="::lesson.name"></h4>
+							<h5 ng-bind="::lesson.description"></h5>
+							<div class="green-anchor" ng-bind="::lesson.level"></div>
 							<div>Left: 10/30 | 10 min. spent</div>
 						</div>
 						<div class="col-md-4">
 							<h5></h5>
-							<input type="submit" class="btn btn-primary btn-big" value="Start" />
+							<input type="submit" class="btn btn-primary btn-big" value="Start" ng-click="startLesson(lesson.id)" />
 						</div>
 					</div>
+				</tab>
+				<tab ng-click="getTeacherMain()">
+                    <tab-heading>My Lessons</tab-heading>
+					<div class="container">
+						<div class="col-md-4">
+
+						</div>
+						<div class="col-md-4">
+							<h1 class="text-center">My Lessons</h1>
+						</div>
+						<div class="col-md-4 text-right">
+							<h5></h5>
+							<input type="submit" class="btn btn-primary btn-big" value="Add Lesson" ng-click="addLesson()" />
+						</div>
+					</div>
+					<div class="container bordered text-center" ng-repeat="lesson in data.lessons">
+							<div class="col-md-6 text-left">
+								<h4 ng-bind="::lesson.programmingLanguage"></h4>
+								<h4 ng-bind="::lesson.name"></h4>
+								<div class="green-anchor" ng-bind="::lesson.level"></div>
+							</div>
+							<div class="col-md-6 text-right">
+								<h5></h5>
+								<input type="submit" class="btn btn-primary btn-big" value="{{lesson.isPublished ? 'Unpublish' : 'Publish'}}" ng-click="setLessonPublishState(lesson.id, !lesson.isPublished)" />
+								<input type="submit" class="btn btn-primary btn-big" value="Edit" ng-click="" />
+								<input type="submit" class="btn btn-primary btn-big" value="Delete" ng-click="" />
+							</div>
+						</div>
 				</tab>
 				<tab>
                     <tab-heading>Profile</tab-heading>
 					<div class="container">
 						<div class="col-sm-3 col-md-3">
 							<h4>Student</h4>
-							<h5>Petras Petrauskas</h5>
+							<h5>{{user.firstname}} {{user.lastname}}</h5>
 							<div>
 								<a ng-click="profileFieldset = 'change_personal_info'">Change personal info</a>
 							</div>

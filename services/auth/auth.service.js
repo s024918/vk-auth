@@ -1,3 +1,4 @@
+var constants = require(__dirname + '/../../app.constants');
 var soap = require('soap');
 var wsdl = require('fs').readFileSync('auth.wsdl', 'utf8');
 var express = require('express');
@@ -16,7 +17,6 @@ var orm = new Connection(
 },
 discover
 );
-var secretKey = "labai slaptas sifravimo raktas";
 
 var service = {
     authService : {
@@ -24,7 +24,7 @@ var service = {
             memorize: function (params, callback) {
 				if (params.token) {
 					var parseToken = JSON.parse(params.token);
-					jwt.verify(parseToken.key, secretKey, function(err, decoded) {
+					jwt.verify(parseToken.key, constants.SECRET_KEY, function(err, decoded) {
 						if (err) {
 							return callback({
 								isAuthenticated: false, key: null
@@ -38,9 +38,8 @@ var service = {
 							}
 							else {
 								decoded.iat = Math.floor(Date.now() / 1000) + 60 * 60; // Basically, updating token key every time when user calling *ring ring
-								var token = jwt.sign(decoded, secretKey);
 								return callback({
-									isAuthenticated: true, key: token, userData: decoded
+									isAuthenticated: true, key: decoded
 								});
 							}
 						}
@@ -55,10 +54,9 @@ var service = {
 								});
 							}
 							else {
-								var userData = { email: user.email, password: user.password, firstname: user.firstname, lastname: user.lastname, iat: Math.floor(Date.now() / 1000) + 60 * 60 };
-								var token = jwt.sign(userData, secretKey);
+								var userData = { userHashId: user.hashId, iat: Math.floor(Date.now() / 1000) + 60 * 60 };
 								return callback({
-									isAuthenticated: true, key: token, userData: userData
+									isAuthenticated: true, key: userData
 								});
 							}
 						});

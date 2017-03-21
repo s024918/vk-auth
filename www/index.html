@@ -21,6 +21,8 @@
 	<script type="text/javascript" src="/app/vk-auth/logout/logout.controller.js"></script>
 	<script type="text/javascript" src="/app/vk-auth/register/register.controller.js"></script>
 	<script type="text/javascript" src="/app/vk-auth/user/main/main.controller.js"></script>
+	<script type="text/javascript" src="/app/vk-auth/user/start-lesson/start-lesson.controller.js"></script>
+	<script type="text/javascript" src="/app/vk-auth/user/start-topic/start-topic.controller.js"></script>
     <link rel="stylesheet" type="text/css" href="../content/bootstrap.min.css"/>
 	<link rel="stylesheet" type="text/css" href="../content/site.css"/>
 	<link rel="stylesheet" type="text/css" href="../content/vk-auth.css"/>
@@ -39,10 +41,10 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li><a href="/">Home</a></li>
-                    <li ng-if="!user.userData"><a href="/login">Login</a></li>
-					<li ng-if="!user.userData"><a href="/register">Register</a></li>
-					<li ng-if="user.userData"><a href="/user/main">{{user.userData.firstname}} Profile</a></li>
-					<li ng-if="user.userData"><a href="/user/logout">Logout</a></li>
+                    <li ng-if="!user"><a href="/login">Login</a></li>
+					<li ng-if="!user"><a href="/register">Register</a></li>
+					<li ng-if="user"><a href="/user/main">{{user.firstname}} Profile</a></li>
+					<li ng-if="user"><a href="/user/logout">Logout</a></li>
                 </ul>
             </div>
         </div>

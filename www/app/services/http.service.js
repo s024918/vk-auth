@@ -1,8 +1,8 @@
 (function() {
 	'use strict';
 	
-	app.service("httpService", ["$http", "localStorageService", "$rootScope",
-		function ($http, localStorageService, $rootScope) {
+	app.service("httpService", ["$http", "localStorageService", "$rootScope", "$location",
+		function ($http, localStorageService, $rootScope, $location) {
 			this.get = function (controllerApi) {
 				return $http.get("/api/" + controllerApi);
 			};
@@ -12,27 +12,45 @@
 			this.getByID = function (controllerApi, id) {
 				return $http.get("/api/" + controllerApi + "/" + id);
 			};
-			this.getWithAuth = function (controllerApi, config) {
-				var result;
-				
-				config.params.token = localStorageService.get('vk-auth');
-				$http.get('/api/login', config)
+			this.getWithAuth = function (controllerApi, config, scope) {
+				config.params.token = localStorageService.get("vk-auth");
+				$http.get(controllerApi, config)
 					.success(function (data, status, headers, config) {
-						if (!data.token.isAuthenticated) {
+						scope.data = data;
+						if (!data || !data.token || !data.token.isAuthenticated) {
 							$rootScope.user = null;
-							localStorageService.set('vk-auth', null);
-							return;
+							localStorageService.set("vk-auth", null);
+							$location.path("/login");
 						}
-						
-						$rootScope.user = data.token;
-						localStorageService.set('vk-auth', data.token);
-						result = data;
+						else {
+							localStorageService.set("vk-auth", data.token);
+							scope.authSuccessCallback();
+						}
 					})
 					.error(function (data, status, header, config) {
-						console.log("Nereikia taip daryti...")
+						console.log("Nereikia taip daryti...");
+						scope.data = data;
 					});
-					
-				return result;
+			};
+			this.postWithAuth = function (controllerApi, config, scope, scopeData) {
+				config.token = JSON.stringify(localStorageService.get("vk-auth"));
+				$http.post(controllerApi, config)
+					.success(function (data, status, headers, config) {
+						scopeData = data;
+						if (!data || !data.token || !data.token.isAuthenticated) {
+							$rootScope.user = null;
+							localStorageService.set("vk-auth", null);
+							$location.path("/login");
+						}
+						else {
+							localStorageService.set("vk-auth", data.token);
+							scope.authSuccessCallback();
+						}
+					})
+					.error(function (data, status, header, config) {
+						console.log("Nereikia taip daryti...");
+						scopeData = data;
+					});
 			};
 			this.post = function (controllerApi, item) {
 				var request = $http({

@@ -1,0 +1,22 @@
+<div class="container">
+	<div class="panel panel-default standart-margin">
+		<div class="panel-body">
+			<div class="text-center">
+				<h4 ng-bind="::data.lesson.name"></h4>
+				<h5 ng-bind="::data.lesson.description"></h5>
+				<div class="green-anchor" ng-bind="::data.lesson.level"></div>
+				<span class="grey-anchor">Teacher: {{::data.lesson.teacher}}</span>
+			</div>
+			<div class="container bordered" ng-repeat="topic in data.lesson.topics">
+				<div class="col-md-8">
+					<h4 ng-bind="::topic.name"></h4>
+					<div>Status: 10/30 | 10 min. spent</div>
+				</div>
+				<div class="col-md-4 text-right">
+					<h5></h5>
+					<input type="submit" class="btn btn-primary btn-big" value="Enter" ng-click="startTopic(topic.id)" />
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

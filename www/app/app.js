@@ -31,6 +31,16 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
         controller: "UserMainCtrl",
         templateUrl: "App/vk-auth/user/main/main.html"
     });
+	
+	$routeProvider.when("/user/start-lesson/:id", {
+        controller: "UserStartLessonCtrl",
+        templateUrl: "App/vk-auth/user/start-lesson/start-lesson.html"
+    });
+	
+	$routeProvider.when("/user/start-topic/:id", {
+        controller: "UserStartTopicCtrl",
+        templateUrl: "App/vk-auth/user/start-topic/start-topic.html"
+    });
 
     $routeProvider.otherwise({
         controller: "404Ctrl",

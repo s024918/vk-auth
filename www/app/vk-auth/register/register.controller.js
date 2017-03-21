@@ -7,8 +7,9 @@
 				$scope.errors = [];
 				
 				var account = {
-					name: $scope.name,
-					lastName: $scope.lastName,
+					roleId: $scope.roleId,
+					firstname: $scope.firstname,
+					lastname: $scope.lastname,
 					email: $scope.email,
 					password: $scope.password,
 					confirmPassword: $scope.confirmPassword
@@ -18,8 +19,8 @@
 				promisePost.then(function (data) {
 					$location.path('/login');
 				},
-				function (error) {
-					$scope.errors = error;
+				function (response) {
+					$scope.errors = response.data;
 				});
 			};
 		}

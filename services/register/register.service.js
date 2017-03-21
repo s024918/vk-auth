@@ -1,8 +1,10 @@
+var registerValidator = require('./register.validator');
+
 module.exports = function (app, sequelize, models) {
 	app.post('/api/register', function(req, res) {
-		if (req.body.password == null) {
-			var responseMessage = {"errorPassword": "VeryWrongPassword"};
-				res.status(400).json(responseMessage);
+		var errorDictionary = registerValidator(req.body);
+		if (Object.keys(errorDictionary).length > 0) {
+			res.status(400).json(errorDictionary);
 		}
 		else {
 			models.User
@@ -10,12 +12,12 @@ module.exports = function (app, sequelize, models) {
 			.spread(function(user, created) {
 				if (created) {
 					res.json("gzgz");
-				} else {
-					var responseMessage = {"errorHeader": ["Username with such email already exists."]};
-					res.status(400).json(responseMessage);
 				}
-			});		
-
+				else {
+					errorDictionary["errorHeader"] = "User with such email already exists.";
+					res.status(400).json(errorDictionary);
+				}
+			});	
 		}
 	});
 };
