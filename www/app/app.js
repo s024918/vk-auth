@@ -6,7 +6,9 @@ app.run(["$rootScope", "localStorageService", function ($rootScope, localStorage
     $rootScope.user = localStorageService.get('vk-auth');
 }]);
 
-app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
+app.config(['$routeProvider', '$locationProvider', '$httpProvider', function ($routeProvider, $locationProvider, $httpProvider) {
+	$httpProvider.defaults.headers.delete = { 'Content-Type' : 'application/json' };
+	
     $routeProvider.when("/", {
         controller: "HomeCtrl",
         templateUrl: "App/vk-auth/home/home.html"
@@ -37,9 +39,39 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
         templateUrl: "App/vk-auth/user/start-lesson/start-lesson.html"
     });
 	
+	$routeProvider.when("/user/create-lesson", {
+        controller: "UserCreateLessonCtrl",
+        templateUrl: "App/vk-auth/user/create-lesson/create-lesson.html"
+    });
+	
+	$routeProvider.when("/user/edit-lesson/:id", {
+        controller: "UserEditLessonCtrl",
+        templateUrl: "App/vk-auth/user/edit-lesson/edit-lesson.html"
+    });
+	
 	$routeProvider.when("/user/start-topic/:id", {
         controller: "UserStartTopicCtrl",
         templateUrl: "App/vk-auth/user/start-topic/start-topic.html"
+    });
+	
+	$routeProvider.when("/user/create-topic/:lessonId", {
+        controller: "UserCreateTopicCtrl",
+        templateUrl: "App/vk-auth/user/create-topic/create-topic.html"
+    });
+	
+	$routeProvider.when("/user/edit-topic/:id", {
+        controller: "UserEditTopicCtrl",
+        templateUrl: "App/vk-auth/user/edit-topic/edit-topic.html"
+    });
+	
+	$routeProvider.when("/user/create-slide/:topicId", {
+        controller: "UserCreateSlideCtrl",
+        templateUrl: "App/vk-auth/user/create-slide/create-slide.html"
+    });
+	
+	$routeProvider.when("/user/edit-slide/:id", {
+        controller: "UserEditSlideCtrl",
+        templateUrl: "App/vk-auth/user/edit-slide/edit-slide.html"
     });
 
     $routeProvider.otherwise({

@@ -3,7 +3,7 @@ var constants = require(__dirname + '/../../app.constants');
 var jwt = require('jsonwebtoken');
 
 module.exports = function (app, sequelize, models) {
-	app.put('/api/publish-lesson', function(req, res) {
+	app.put('/api/publish-topic', function(req, res) {
 		var model = {};
 		var errorDictionary = {};
 		
@@ -24,30 +24,35 @@ module.exports = function (app, sequelize, models) {
 						models.Topic
 						.findAll({
 							where: {
-								lessonId: param.id,
-								isPublished: true
+								lessonId: param.lessonId
 							},
 							include: [
-								{ model: models.Slide, where: { isPublished: true } }
+								{ model: models.Slide, where: { isPublished: true } },
+								{ model: models.Lesson, where: { userId: user.id } }
 							]
 						})
 						.then(function(topics) {
-							if (topics.length <= 0) {
-								errorDictionary["publishError"] = "Impossible to publish this lesson because it has no published topics/lessons!";
+							if (!topics.find(o => o.id === param.topicId)) {
+								errorDictionary["publishError"] = "Impossible to publish this topic because it has no published slides!";
 								model.errors = errorDictionary;
 								return res.status(400).json(model);
 							}
-							console.log("Hiustonai? " + JSON.stringify(topics));
-							models.Lesson
+
+							if (topics.filter(function(value){ return value.isPublished===true;}).length === 1 && !param.publishState) {
+								errorDictionary["publishError"] = "Impossible to unpublish this topic because this is the last published topic with available published slides!";
+								model.errors = errorDictionary;
+								return res.status(400).json(model);
+							}
+
+							models.Topic
 							.update({
 								isPublished: param.publishState
 							}, {
 								where: {
-									id: param.id,
-									userId: user.id
+									id: param.topicId
 								}
 							})
-							.then(function(lesson) {
+							.then(function(topic) {
 								res.json(model);
 							});
 							

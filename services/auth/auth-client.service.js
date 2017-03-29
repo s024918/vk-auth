@@ -12,6 +12,10 @@ module.exports = function (data, model, callback) {
 			soapParam.token = data.token;
 			soapParam.nothing = "";
 		}
+		else {
+			soapParam.email = data.email;
+			soapParam.password = data.password;
+		}
 		
 		client.describe().authService.authPort;
 		client.memorize(soapParam, function(err, token) {

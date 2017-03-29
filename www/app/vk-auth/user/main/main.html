@@ -20,7 +20,7 @@
 							<input type="text" ng-model="email" class="form-control" />
 						</div>
 					</div>
-					<div class="container bordered text-center" ng-repeat="lesson in data.lessons">
+					<div class="container bordered text-center" ng-repeat="lesson in lessons">
 						<div class="col-md-4">
 							<h4 ng-bind="::lesson.programmingLanguage"></h4>
 							<div class="grey-anchor" ng-bind="::lesson.teacher"></div>
@@ -33,7 +33,7 @@
 						</div>
 						<div class="col-md-4">
 							<h5></h5>
-							<input type="submit" class="btn btn-primary btn-big" value="Start" ng-click="startLesson(lesson.id)" />
+							<input type="submit" class="btn btn-primary btn-big" value="Start" ng-click="startLesson(lesson)" />
 						</div>
 					</div>
 				</tab>
@@ -48,10 +48,10 @@
 						</div>
 						<div class="col-md-4 text-right">
 							<h5></h5>
-							<input type="submit" class="btn btn-primary btn-big" value="Add Lesson" ng-click="addLesson()" />
+							<input type="submit" class="btn btn-success btn-big" value="Create Lesson" ng-click="createLesson()" />
 						</div>
 					</div>
-					<div class="container bordered text-center" ng-repeat="lesson in data.lessons">
+					<div class="container bordered text-center" ng-repeat="lesson in lessons">
 							<div class="col-md-6 text-left">
 								<h4 ng-bind="::lesson.programmingLanguage"></h4>
 								<h4 ng-bind="::lesson.name"></h4>
@@ -60,7 +60,7 @@
 							<div class="col-md-6 text-right">
 								<h5></h5>
 								<input type="submit" class="btn btn-primary btn-big" value="{{lesson.isPublished ? 'Unpublish' : 'Publish'}}" ng-click="setLessonPublishState(lesson)" />
-								<input type="submit" class="btn btn-primary btn-big" value="Edit" ng-click="" />
+								<input type="submit" class="btn btn-primary btn-big" value="Edit" ng-click="editLesson(lesson)" />
 								<input type="submit" class="btn btn-primary btn-big" value="Delete" ng-click="deleteLesson(lesson)" />
 							</div>
 						</div>

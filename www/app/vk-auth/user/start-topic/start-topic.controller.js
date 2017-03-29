@@ -11,7 +11,7 @@
             };
 
             httpService.getWithAuth("/api/start-topic", config, $scope);
-			$scope.authSuccessCallback = function () {
+			$scope.authSuccessCallback = function (isStatusOk, result) {
 				$rootScope.user = $scope.data.userData;
 			}
 		

@@ -5,8 +5,9 @@ var jwt = require('jsonwebtoken');
 module.exports = function (app, sequelize, models) {
 	app.post('/api/delete-lesson', function(req, res) {
 		var model = {};
-		
+
 		var soapClientCallback = function (param) {
+			
 			if (model.token.isAuthenticated === "true") {
 				models.User
 				.findOne({ where: { hashId: model.token.key.userHashId }})
@@ -22,7 +23,7 @@ module.exports = function (app, sequelize, models) {
 						
 						models.Lesson
 						.destroy({
-							where: { id: param.id }
+							where: { id: param.id, userId: user.id }
 						})
 						.then(function(isDeleted) {
 							model.isDeleted = isDeleted;

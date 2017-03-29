@@ -6,4 +6,5 @@ module.exports = function (instance) {
 	instance.models.Topic.hasMany(instance.models.Slide, { foreignKey: 'topicId' });
 	instance.models.Topic.belongsTo(instance.models.Lesson, { foreignKey: 'lessonId' });
 	instance.models.Topic.hasMany(instance.models.UserLessonHistory, { foreignKey: 'topicId' });
+	instance.models.Slide.belongsTo(instance.models.Topic, { foreignKey: 'topicId' });
 };

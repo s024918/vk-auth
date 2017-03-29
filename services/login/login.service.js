@@ -12,7 +12,7 @@ module.exports = function (app, sequelize, models) {
 		else {
 			var model = {};
 			
-			var soapClientCallback = function () {
+			var soapClientCallback = function (param) {
 				if (model.token.isAuthenticated === "true"){
 					console.log("tipo?" + model.token.isAuthenticated);
 					console.log("cyka222 : " + JSON.stringify(model.token.key.userHashId));

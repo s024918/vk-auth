@@ -7,7 +7,8 @@ module.exports = function(sequelize, DataTypes) {
 		},
 		lessonId: DataTypes.INTEGER,
 		name: DataTypes.STRING,
-		sequenceNumber: DataTypes.INTEGER
+		sequenceNumber: DataTypes.INTEGER,
+		isPublished: DataTypes.BOOLEAN
 	});
 	
 	return Topic;

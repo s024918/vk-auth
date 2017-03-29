@@ -1,10 +1,10 @@
 var soapClientAuthService = require(__dirname + '/../auth/auth-client.service');
 var constants = require(__dirname + '/../../app.constants');
 var jwt = require('jsonwebtoken');
-var createLessonValidator = require('./create-lesson.validator');
+var createSlideValidator = require('./create-slide.validator');
 
 module.exports = function (app, sequelize, models) {
-	app.get('/api/create-lesson', function(req, res) {
+	app.get('/api/create-slide', function(req, res) {
 		var model = {};
 		
 		var soapClientCallback = function (param) {
@@ -34,7 +34,7 @@ module.exports = function (app, sequelize, models) {
 		soapClientAuthService(req.query, model, soapClientCallback);
 	});
 	
-	app.post('/api/create-lesson', function(req, res) {
+	app.post('/api/create-slide', function(req, res) {
 		var model = {};
 		
 		var soapClientCallback = function (param) {
@@ -51,16 +51,16 @@ module.exports = function (app, sequelize, models) {
 						model.userData.lastname = user.lastname;
 						model.token.key = jwt.sign(model.token.key, constants.SECRET_KEY);
 						
-						var errorDictionary = createLessonValidator(param);
+						var errorDictionary = createSlideValidator(param);
 						if (Object.keys(errorDictionary).length > 0) {
 							model.errors = errorDictionary;
 							res.status(400).json(model);
 						}
 						else {
 							if (user.roleId === constants.LECTURER) {
-								models.Lesson
-								.create({ userId: user.id, programmingLanguageId: param.programmingLanguageId, levelId: param.levelId, name: param.name, description: param.description })
-								.then(function(lesson) {
+								models.Slide
+								.create({ topicId: param.topicId, title: param.title, description: param.description, answer: param.answer, sequenceNumber: param.sequenceNumber })
+								.then(function(slide) {
 									res.json(model);
 								});
 							}

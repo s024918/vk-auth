@@ -22,11 +22,12 @@ module.exports = function (app, sequelize, models) {
 						models.Topic
 						.findOne({
 							where: {
-								id: param.topicId
+								id: param.topicId,
+								isPublished: true
 							},
 							include: [
 								{ model: models.Slide },
-								{ model: models.UserLessonHistory, where: { userId: user.id }, required: false }, // required for left join instead of inner.
+								{ model: models.UserLessonHistory, where: { userId: user.id } },
 								{ model: models.Lesson, where: { isPublished: true }, include: [ models.Level, models.User ] }
 							],
 							order: [

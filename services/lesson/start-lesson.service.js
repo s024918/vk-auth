@@ -19,6 +19,7 @@ module.exports = function (app, sequelize, models) {
 						model.userData.firstname = user.firstname;
 						model.userData.lastname = user.lastname;
 						model.token.key = jwt.sign(model.token.key, constants.SECRET_KEY);
+						
 						models.Lesson
 						.findOne({
 							where: {
@@ -29,13 +30,17 @@ module.exports = function (app, sequelize, models) {
 								{ model: models.Level },
 								{ model: models.ProgrammingLanguage },
 								{ model: models.User },
-								{ model: models.Topic, include: [ models.Slide ] }
+								{ model: models.Topic, where: { isPublished: true }, include: [ models.Slide ] }
 							],
 							order: [
 								[ models.Topic, 'sequenceNumber', 'ASC' ]
 							]
 						})
 						.then(function(lesson) {
+							if (!lesson) {
+								return res.json(model); // unexpected param returns null
+							}
+							
 							model.lesson = {
 								name: lesson.name,
 								description: lesson.description,
@@ -43,10 +48,20 @@ module.exports = function (app, sequelize, models) {
 								topics: lesson.Topics,
 								teacher: lesson.User.firstname + " " + lesson.User.lastname,
 							};
-							
+
 							for (var i = 0; i < lesson.Topics.length; i++) {
 								models.UserLessonHistory
-								.findOrCreate({where: {userId: user.id, topicId: lesson.Topics[i].id}, defaults: { userId: user.id, topicId: lesson.Topics[i].id, slideId: lesson.Topics[i].Slides[0].id }}); // Async for the purpose
+								.findOrCreate({
+									where: {
+										userId: user.id,
+										topicId: lesson.Topics[i].id
+									},
+									defaults: {
+										userId: user.id,
+										topicId: lesson.Topics[i].id,
+										slideId: lesson.Topics[i].Slides[0].id
+									}
+								}); // Async for the purpose
 							}
 							
 								

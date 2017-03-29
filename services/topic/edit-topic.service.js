@@ -1,10 +1,10 @@
 var soapClientAuthService = require(__dirname + '/../auth/auth-client.service');
 var constants = require(__dirname + '/../../app.constants');
 var jwt = require('jsonwebtoken');
-var createLessonValidator = require('./create-lesson.validator');
+var editTopicValidator = require('./edit-topic.validator');
 
 module.exports = function (app, sequelize, models) {
-	app.get('/api/create-lesson', function(req, res) {
+	app.get('/api/edit-topic', function(req, res) {
 		var model = {};
 		
 		var soapClientCallback = function (param) {
@@ -21,7 +21,34 @@ module.exports = function (app, sequelize, models) {
 						model.userData.lastname = user.lastname;
 						model.token.key = jwt.sign(model.token.key, constants.SECRET_KEY);
 						
-						res.json(model);
+						models.Topic
+						.findOne({
+							where: {
+								id: param.id
+							},
+							include: [
+								{ model: models.Lesson, where: { userId: user.id } },
+								{ model: models.Slide }
+							],
+							order: [
+								[ models.Slide, 'sequenceNumber', 'ASC' ]
+							]
+						})
+						.then(function(topic) {
+							if (!topic) {
+								return res.json(model);
+							}
+							
+							model.topic = {
+								id: topic.id,
+								lessonId: topic.lessonId,
+								name: topic.name,
+								sequenceNumber: topic.sequenceNumber,
+								slides: topic.Slides
+							};
+
+							res.json(model);
+						});
 					}
 				});	
 			}
@@ -34,9 +61,9 @@ module.exports = function (app, sequelize, models) {
 		soapClientAuthService(req.query, model, soapClientCallback);
 	});
 	
-	app.post('/api/create-lesson', function(req, res) {
+	app.put('/api/edit-topic', function(req, res) {
 		var model = {};
-		
+
 		var soapClientCallback = function (param) {
 			if (model.token.isAuthenticated === "true") {
 				models.User
@@ -51,23 +78,37 @@ module.exports = function (app, sequelize, models) {
 						model.userData.lastname = user.lastname;
 						model.token.key = jwt.sign(model.token.key, constants.SECRET_KEY);
 						
-						var errorDictionary = createLessonValidator(param);
+						var errorDictionary = editTopicValidator(param);
 						if (Object.keys(errorDictionary).length > 0) {
 							model.errors = errorDictionary;
 							res.status(400).json(model);
 						}
 						else {
-							if (user.roleId === constants.LECTURER) {
-								models.Lesson
-								.create({ userId: user.id, programmingLanguageId: param.programmingLanguageId, levelId: param.levelId, name: param.name, description: param.description })
-								.then(function(lesson) {
+							models.Topic
+							.findOne({
+								where: {
+									id: param.id
+								},
+								include: [
+									{ model: models.Lesson, where: { userId: user.id } }
+								]
+							})
+							.then(function(topic) {
+								if (!topic) {
+									// TODO: No rights to edit this topic
+									return res.json(model);
+								}
+								
+								models.Topic
+								.update({
+									name: param.name,
+									sequenceNumber: param.sequenceNumber
+								},
+								{ where: { id: param.id } })
+								.then(function(topic) {
 									res.json(model);
 								});
-							}
-							else {
-								// TODO: You are not lecturer
-								res.json(model);
-							}
+							});
 						}
 					}
 				});	

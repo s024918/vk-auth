@@ -9,7 +9,9 @@ module.exports = function(sequelize, DataTypes) {
 		title: DataTypes.STRING,
 		description: DataTypes.STRING,
 		isAnswerable: DataTypes.BOOLEAN,
-		answer: DataTypes.STRING
+		answer: DataTypes.STRING,
+		sequenceNumber: DataTypes.INTEGER,
+		isPublished: DataTypes.BOOLEAN
 	});
 	
 	return Slide;

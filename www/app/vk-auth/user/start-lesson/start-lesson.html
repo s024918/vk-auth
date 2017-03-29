@@ -2,12 +2,12 @@
 	<div class="panel panel-default standart-margin">
 		<div class="panel-body">
 			<div class="text-center">
-				<h4 ng-bind="::data.lesson.name"></h4>
-				<h5 ng-bind="::data.lesson.description"></h5>
-				<div class="green-anchor" ng-bind="::data.lesson.level"></div>
-				<span class="grey-anchor">Teacher: {{::data.lesson.teacher}}</span>
+				<h4 ng-bind="::lesson.name"></h4>
+				<h5 ng-bind="::lesson.description"></h5>
+				<div class="green-anchor" ng-bind="::lesson.level"></div>
+				<span class="grey-anchor">Teacher: {{::lesson.teacher}}</span>
 			</div>
-			<div class="container bordered" ng-repeat="topic in data.lesson.topics">
+			<div class="container bordered" ng-repeat="topic in lesson.topics">
 				<div class="col-md-8">
 					<h4 ng-bind="::topic.name"></h4>
 					<div>Status: 10/30 | 10 min. spent</div>
