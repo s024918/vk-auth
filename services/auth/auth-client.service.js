@@ -1,7 +1,9 @@
 var soap = require('soap');
 var url = 'http://localhost:8001/auth?wsdl';
+var jwt = require('jsonwebtoken');
+var constants = require(__dirname + '/../../app.constants');
 
-module.exports = function (data, model, callback) {
+module.exports = function (data, model, dbModels, callback) {
 	soap.createClient(url, function(error, client) {
 		if (error) {
 			console.log(error);
@@ -19,14 +21,31 @@ module.exports = function (data, model, callback) {
 		
 		client.describe().authService.authPort;
 		client.memorize(soapParam, function(err, token) {
-				if (err) {
-					console.log(err);
-				}
-				
-				// Response from web service
-				model.token = token;
-				callback(data);
-				
+			if (err) {
+				console.log(err);
+			}
+			
+			// Response from web service
+			model.token = token;
+			
+			if (model.token.isAuthenticated === "true") {
+				dbModels.User
+				.findOne({ where: { hashId: model.token.key.userHashId }})
+				.then(function(user) {
+					if (user) {
+						model.userData = {};
+						model.userData.firstname = user.firstname;
+						model.userData.lastname = user.lastname;
+						model.userData.roleId = user.roleId;
+						model.token.key = jwt.sign(model.token.key, constants.SECRET_KEY);
+					}
+					console.log("sssssssssss" + JSON.stringify(model.token));
+					callback(data, user);
+				});
+			}
+			else {
+				callback(data, null);
+			}
 		});
 	});
 };

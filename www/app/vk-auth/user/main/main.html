@@ -9,18 +9,52 @@
 					<div class="container">
 						<div class="col-md-4">
 							<label class="control-label">Programming language</label>
-							<input type="text" ng-model="email" class="form-control" />
+							<i style="cursor: pointer;" ng-click="programmingLanguageRemoveFilterClick()">(remove filter)</i>
+							<div class="dropdown">
+								<button class="btn btn-default dropdown-toggle form-control" type="button" ng-click="listProgrammingLanguageClassifiers()">
+									{{programmingLanguageName}}
+									<span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu">
+									<li ng-repeat="programmingLanguage in programmingLanguageClassifiers">
+										<a ng-click="programmingLanguageFilterClick(programmingLanguage)" style="cursor: pointer;" ng-bind="programmingLanguage.name"></a>
+									</li>
+								</ul>
+							</div>
 						</div>
 						<div class="col-md-4">
-							<label class="control-label">Teacher</label>
-							<input type="text" ng-model="email" class="form-control" />
+							<label class="control-label">Lecturer</label>
+							<i style="cursor: pointer;" ng-click="lecturerRemoveFilterClick()">(remove filter)</i>
+							<div class="dropdown">
+								<button class="btn btn-default dropdown-toggle form-control" type="button" ng-click="listLecturerClassifiers()">
+									{{lecturerName}}
+									<span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu">
+									<li ng-repeat="lecturer in lecturerClassifiers">
+										<a ng-click="lecturerFilterClick(lecturer)" style="cursor: pointer;" ng-bind="lecturer"></a>
+									</li>
+								</ul>
+							</div>
 						</div>
 						<div class="col-md-4">
 							<label class="control-label">Level</label>
-							<input type="text" ng-model="email" class="form-control" />
+							<i style="cursor: pointer;" ng-click="levelRemoveFilterClick()">(remove filter)</i>
+							<div class="dropdown">
+								<button class="btn btn-default dropdown-toggle form-control" type="button" ng-click="listLevelClassifiers()">
+									{{levelName}}
+									<span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu">
+									<li ng-repeat="level in levelClassifiers">
+										<a ng-click="levelFilterClick(level)" style="cursor: pointer;" ng-bind="level.name"></a>
+									</li>
+								</ul>
+							</div>
 						</div>
 					</div>
-					<div class="container bordered text-center" ng-repeat="lesson in lessons">
+					<div class="container bordered text-center"
+						ng-repeat="lesson in filteredLessons = (lessons | filter : {level: levelName, programmingLanguage: programmingLanguageName, teacher: lecturerName}) | limitTo:3:3*(lessonPage-1)">
 						<div class="col-md-4">
 							<h4 ng-bind="::lesson.programmingLanguage"></h4>
 							<div class="grey-anchor" ng-bind="::lesson.teacher"></div>
@@ -29,16 +63,39 @@
 							<h4 ng-bind="::lesson.name"></h4>
 							<h5 ng-bind="::lesson.description"></h5>
 							<div class="green-anchor" ng-bind="::lesson.level"></div>
-							<div>Left: 10/30 | 10 min. spent</div>
 						</div>
 						<div class="col-md-4">
 							<h5></h5>
 							<input type="submit" class="btn btn-primary btn-big" value="Start" ng-click="startLesson(lesson)" />
 						</div>
 					</div>
+					<h1 ng-if="filteredLessons.length === 0" class="text-center">No lessons according yours filter.</h1>
+					<h1 ng-if="lessons.length === 0" class="text-center">No new lessons to start. Sorry come back later!</h1>
+					<pagination ng-show="lessons.length > 0" class="pagination-sm pagination" total-items="filteredLessons.length" ng-model="lessonPage"
+						previous-text="&lsaquo;" next-text="&rsaquo;" items-per-page=3></pagination>
+					<hr />
+					<h1 class="text-center">My Lessons</h1>
+					<div class="container bordered text-center" ng-repeat="lesson in userLessons | limitTo:3:3*(userLessonPage-1)">
+						<div class="col-md-4">
+							<h4 ng-bind="::lesson.programmingLanguage"></h4>
+							<div class="grey-anchor" ng-bind="::lesson.teacher"></div>
+						</div>
+						<div class="col-md-4">
+							<h4 ng-bind="::lesson.name"></h4>
+							<h5 ng-bind="::lesson.description"></h5>
+							<div class="green-anchor" ng-bind="::lesson.level"></div>
+							<div class="green-anchor" style="font-size: 18px;" ng-if="::lesson.isFinished">LESSON FINISHED</div>
+						</div>
+						<div class="col-md-4">
+							<h5></h5>
+							<input type="submit" class="btn btn-primary btn-big" value="Start" ng-click="startLesson(lesson)" />
+						</div>
+					</div>
+					<pagination class="pagination-sm pagination" total-items="userLessons.length" ng-model="userLessonPage"
+						previous-text="&lsaquo;" next-text="&rsaquo;" items-per-page=3></pagination>
 				</tab>
 				<tab ng-click="getTeacherMain()">
-                    <tab-heading>My Lessons</tab-heading>
+                    <tab-heading>Lecturer Zone</tab-heading>
 					<div class="container">
 						<div class="col-md-4">
 

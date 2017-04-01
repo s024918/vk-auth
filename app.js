@@ -22,6 +22,9 @@ Promise.resolve(orm).then(function(instance) {
 	var initProgrammingLanguageClassifierService = require('./services/classifier/programming-language.service');
 	initProgrammingLanguageClassifierService(app, instance.sequelize, instance.models);
 	
+	var initLecturerClassifierService = require('./services/classifier/lecturer.service');
+	initLecturerClassifierService(app, instance.sequelize, instance.models);
+	
 	var initLoginService = require('./services/login/login.service');
 	initLoginService(app, instance.sequelize, instance.models);
 	
@@ -72,6 +75,9 @@ Promise.resolve(orm).then(function(instance) {
 	
 	var initEditSlideService = require('./services/slide/edit-slide.service');
 	initEditSlideService(app, instance.sequelize, instance.models);
+	
+	var initNextSlideService = require('./services/slide/next-slide.service');
+	initNextSlideService(app, instance.sequelize, instance.models);
 });
 
 

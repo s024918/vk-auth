@@ -12,11 +12,8 @@ module.exports = function (app, sequelize, models) {
 		else {
 			var model = {};
 			
-			var soapClientCallback = function (param) {
-				if (model.token.isAuthenticated === "true"){
-					console.log("tipo?" + model.token.isAuthenticated);
-					console.log("cyka222 : " + JSON.stringify(model.token.key.userHashId));
-					model.token.key = jwt.sign(model.token.key, constants.SECRET_KEY);
+			var soapClientCallback = function (param, user) {
+				if (user){
 					res.json(model);
 				}
 				else {
@@ -25,7 +22,7 @@ module.exports = function (app, sequelize, models) {
 				}
 			}
 			
-			soapClientAuthService(req.body, model, soapClientCallback);
+			soapClientAuthService(req.body, model, models, soapClientCallback);
 		}
 	});
 };

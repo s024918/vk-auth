@@ -6,93 +6,98 @@ module.exports = function (app, sequelize, models) {
 	app.get('/api/student-main', function(req, res) {
 		var model = {};
 		
-		var soapClientCallback = function (param) {
-			if (model.token.isAuthenticated === "true") {
-				models.User
-				.findOne({ where: { hashId: model.token.key.userHashId }})
-				.then(function(user) {
-					if (!user) {
-						res.json(null); // User account suddenly become deleted so he losses token
-					}
-					else {
-						model.userData = {};
-						model.userData.firstname = user.firstname;
-						model.userData.lastname = user.lastname;
-						model.token.key = jwt.sign(model.token.key, constants.SECRET_KEY);
-						
-						models.Lesson
-						.findAll({ where: { isPublished: true }, include: [models.Level, models.ProgrammingLanguage, models.User, {model: models.Topic, include: [models.Slide]}]})
-						.then(function(lessons) {
-							model.lessons = [];
-							for (var i = 0; i < lessons.length; i++) {
-								model.lessons.push({ // Forming DTO
-									id: lessons[i].id,
-									name: lessons[i].name,
-									description: lessons[i].description,
-									teacher: lessons[i].User.firstname + " " + lessons[i].User.lastname,
-									level: lessons[i].Level.name,
-									programmingLanguage: lessons[i].ProgrammingLanguage.name
-								});
-							}
-
-							res.json(model);
-						});
-					}
-				});	
-			}
-			else {
+		var soapClientCallback = function (param, user) {
+			if (!user) {
 				// TODO: 401 error
-				res.json(null);
+				return res.json(null);
 			}
+			
+			models.Lesson
+			.findAll({
+				where: {
+					isPublished: true
+				},
+				include: [ 
+				models.Level,
+				models.ProgrammingLanguage,
+				models.User,
+				{ model: models.Topic, include: [ models.Slide, { model: models.UserLessonHistory, where: { userId: user.id }, required: false } ] }
+				]
+			})
+			.then(function(lessons) {
+				model.lessons = [];
+				model.userLessons = [];
+				
+				for (var i = 0; i < lessons.length; i++) {
+					var isUserLesson = false;
+					var userLessonFinishedTopicCount = 0;
+					var lessonDto = { // Forming DTO
+						id: lessons[i].id,
+						name: lessons[i].name,
+						description: lessons[i].description,
+						teacher: lessons[i].User.firstname + " " + lessons[i].User.lastname,
+						level: lessons[i].Level.name,
+						programmingLanguage: lessons[i].ProgrammingLanguage.name
+					}
+					
+					for (var topicIndex = 0; topicIndex < lessons[i].Topics.length; topicIndex++) {
+						if (lessons[i].Topics[topicIndex].UserLessonHistories) {
+							for (var userLessonHistoryIndex = 0; userLessonHistoryIndex < lessons[i].Topics[topicIndex].UserLessonHistories.length; userLessonHistoryIndex++) {
+								if (lessons[i].Topics[topicIndex].UserLessonHistories[userLessonHistoryIndex]) {
+									isUserLesson = true;
+									if (lessons[i].Topics[topicIndex].UserLessonHistories[userLessonHistoryIndex].isTopicFinished) {
+										userLessonFinishedTopicCount++;
+									}
+								}
+							}
+						}
+					}
+
+					if (!isUserLesson) {
+						model.lessons.push(lessonDto);
+					}
+					else if (isUserLesson) {
+						lessonDto.isFinished = lessons[i].Topics.length === userLessonFinishedTopicCount;
+						model.userLessons.push(lessonDto);
+					}
+				}
+
+				res.json(model);
+			});
 		}
 		
-		soapClientAuthService(req.query, model, soapClientCallback);
+		soapClientAuthService(req.query, model, models, soapClientCallback);
 	});
 	
 	app.get('/api/teacher-main', function(req, res) {
 		var model = {};
 		
-		var soapClientCallback = function (param) {
-			if (model.token.isAuthenticated === "true") {
-				models.User
-				.findOne({ where: { hashId: model.token.key.userHashId }})
-				.then(function(user) {
-					if (!user) {
-						res.json(null); // User account suddenly become deleted so he losses token
-					}
-					else {
-						model.userData = {};
-						model.userData.firstname = user.firstname;
-						model.userData.lastname = user.lastname;
-						model.token.key = jwt.sign(model.token.key, constants.SECRET_KEY);
-						
-						models.Lesson
-						.findAll({ where: { userId: user.id }, include: [models.Level, models.ProgrammingLanguage, models.User, {model: models.Topic, include: [models.Slide]}]})
-						.then(function(lessons) {
-							model.lessons = [];
-							for (var i = 0; i < lessons.length; i++) {
-								model.lessons.push({ // Forming DTO
-									id: lessons[i].id,
-									name: lessons[i].name,
-									description: lessons[i].description,
-									teacher: lessons[i].User.firstname + " " + lessons[i].User.lastname,
-									level: lessons[i].Level.name,
-									programmingLanguage: lessons[i].ProgrammingLanguage.name,
-									isPublished: lessons[i].isPublished
-								});
-							}
-
-							res.json(model);
-						});
-					}
-				});	
-			}
-			else {
+		var soapClientCallback = function (param, user) {
+			if (!user) {
 				// TODO: 401 error
-				res.json(null);
+				return res.json(null);
 			}
+			
+			models.Lesson
+			.findAll({ where: { userId: user.id }, include: [models.Level, models.ProgrammingLanguage, models.User, {model: models.Topic, include: [models.Slide]}]})
+			.then(function(lessons) {
+				model.lessons = [];
+				for (var i = 0; i < lessons.length; i++) {
+					model.lessons.push({ // Forming DTO
+						id: lessons[i].id,
+						name: lessons[i].name,
+						description: lessons[i].description,
+						teacher: lessons[i].User.firstname + " " + lessons[i].User.lastname,
+						level: lessons[i].Level.name,
+						programmingLanguage: lessons[i].ProgrammingLanguage.name,
+						isPublished: lessons[i].isPublished
+					});
+				}
+
+				res.json(model);
+			});
 		}
 		
-		soapClientAuthService(req.query, model, soapClientCallback);
+		soapClientAuthService(req.query, model, models, soapClientCallback);
 	});
 };
