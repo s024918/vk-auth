@@ -25,6 +25,9 @@ Promise.resolve(orm).then(function(instance) {
 	var initLecturerClassifierService = require('./services/classifier/lecturer.service');
 	initLecturerClassifierService(app, instance.sequelize, instance.models);
 	
+	var initRoleClassifierService = require('./services/classifier/role.service');
+	initRoleClassifierService(app, instance.sequelize, instance.models);
+	
 	var initLoginService = require('./services/login/login.service');
 	initLoginService(app, instance.sequelize, instance.models);
 	

@@ -29,11 +29,18 @@ module.exports = function (app, sequelize, models) {
 				]
 			})
 			.then(function(topic) {
+				if (!topic) {
+					var errorDictionary = {};
+					errorDictionary["errorHeader"] = "Impossible to start not existing topic.";
+					model.errors = errorDictionary;
+					return res.status(400).json(model);
+				}
+				
 				var currentActiveSlideId = 0;
 				var isCurrentActiveTopicFinished = false;
 				var callbackIterator = 0;
 				models.Topic
-				.findAll({ where: { lessonId: topic.lessonId }, include: [ { model: models.UserLessonHistory, where: { userId: user.id } } ] })
+				.findAll({ where: { lessonId: topic.lessonId, isPublished: true }, include: [ { model: models.UserLessonHistory, where: { userId: user.id } } ] })
 				.then(function(topics) {
 					currentActiveSlideId = topics.find(o => o.id == param.topicId).UserLessonHistories[0].slideId;
 					if (!topic.Slides.find(o => o.id == currentActiveSlideId)) {
@@ -53,13 +60,14 @@ module.exports = function (app, sequelize, models) {
 					if (topics.length > 1) {
 						for (callbackIterator; callbackIterator < topics.length; callbackIterator++) {
 							var isTopicFinished = topics[callbackIterator].UserLessonHistories.find(o => o.topicId === topics[callbackIterator].id).isTopicFinished;
-							if (topics[callbackIterator].sequenceNumber < topic.sequenceNumber && !isTopicFinished) {
+							if (topics[callbackIterator].sequenceNumber < topic.sequenceNumber && !isTopicFinished) { // was if (topics[callbackIterator].sequenceNumber < topic.sequenceNumber && !isTopicFinished)
 								var errorDictionary = {};
 								errorDictionary["errorHeader"] = "Impossible to start topic before not finishing already on-learning topic.";
 								model.errors = errorDictionary;
 								res.status(400).json(model);
 								break;
 							}
+
 						}
 					}
 					else {

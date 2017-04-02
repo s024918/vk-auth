@@ -38,7 +38,28 @@ module.exports = function (app, sequelize, models) {
 					models.Topic
 					.create({ lessonId: param.lessonId, name: param.name, sequenceNumber: param.sequenceNumber })
 					.then(function(topic) {
-						res.json(model);
+						// Form new sequence before deleting entry
+						models.Topic
+						.findAll({ where: { lessonId: param.lessonId } })
+						.then(function(topics) {
+							var filteredTopics = topics.filter(function(el) {
+								return el.id !== param.topicId;
+							});
+							
+							for (var i = 0; i < filteredTopics.length; i++) {
+								models.Topic
+								.update({
+									sequenceNumber: i + 1
+								}, {
+									where: {
+										id: filteredTopics[i].id,
+										lessonId: param.lessonId
+									}
+								});
+							}
+							
+							res.json(model);
+						});
 					});
 				}
 				else {

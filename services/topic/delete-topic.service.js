@@ -39,7 +39,6 @@ module.exports = function (app, sequelize, models) {
 				}
 				
 				// Form new sequence before deleting entry
-				// No more need this logic
 				var topics = lesson.Topics.filter(function(el) {
 					return el.id !== param.topicId;
 				});
