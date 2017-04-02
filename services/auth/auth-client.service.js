@@ -30,16 +30,22 @@ module.exports = function (data, model, dbModels, callback) {
 			
 			if (model.token.isAuthenticated === "true") {
 				dbModels.User
-				.findOne({ where: { hashId: model.token.key.userHashId }})
+				.findOne({ where: {
+					hashId: model.token.key.userHashId
+				},
+				include: [
+					dbModels.Role
+				]
+				})
 				.then(function(user) {
 					if (user) {
 						model.userData = {};
 						model.userData.firstname = user.firstname;
 						model.userData.lastname = user.lastname;
-						model.userData.roleId = user.roleId;
+						model.userData.role = user.Role.name;
 						model.token.key = jwt.sign(model.token.key, constants.SECRET_KEY);
 					}
-					console.log("sssssssssss" + JSON.stringify(model.token));
+
 					callback(data, user);
 				});
 			}

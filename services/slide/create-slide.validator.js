@@ -9,5 +9,17 @@ module.exports = function (req) {
 		errors["description"] = "Description field is required.";
 	}
 	
+	if (!req.answer) {
+		errors["answer"] = "Answer field is required.";
+	}
+	
+	if (!req.sequenceNumber) {
+		errors["sequenceNumber"] = "Sequence number field is required.";
+	}
+	
+	if (req.sequenceNumber && req.sequenceNumber <= 0) {
+		errors["sequenceNumber"] = "Sequence number must be greater or equal than 1.";
+	}
+	
 	return errors;
 };

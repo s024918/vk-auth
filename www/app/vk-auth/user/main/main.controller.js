@@ -1,11 +1,13 @@
 (function() {
 	'use strict';
 
-	app.controller("UserMainCtrl", ["$scope", "$rootScope", "$location", "httpService", "localStorageService", "filterFilter",
-		function ($scope, $rootScope, $location, httpService, localStorageService, filterFilter) {
+	app.controller("UserMainCtrl", ["$scope", "$rootScope", "$location", "httpService", "localStorageService", "filterFilter", "$filter",
+		function ($scope, $rootScope, $location, httpService, localStorageService, filterFilter, $filter) {
+			$scope.errors = {};
+			
 			$scope.lessonPage = 1;
 			$scope.userLessonPage = 1;
-
+			
 			$scope.getStudentMain = function () {
 				var config = {
 					params: {
@@ -33,6 +35,23 @@
 				}
 				
 				httpService.getWithAuth("/api/teacher-main", config, getTeacherMainCallback);
+			}
+			
+			$scope.getProfileMain = function () {
+				var config = {
+					params: {
+						businessLogic: 123, // When I name variable businessLogic this means variable will never be used for real and represents possible TODO implementation
+					}
+				};
+				
+				function getProfileMainCallback(isStatusOk, result) {
+					$rootScope.user.createdAt = $filter('date')($rootScope.user.createdAt,'yyyy-MM-dd');
+					$scope.firstname = $rootScope.user.firstname;
+					$scope.lastname = $rootScope.user.lastname;
+					$scope.email = $rootScope.user.email;
+				}
+				
+				httpService.getWithAuth("/api/profile-main", config, getProfileMainCallback);
 			}
 			
 			$scope.createLesson = function () {
@@ -106,6 +125,48 @@
 			
 			$scope.lecturerFilterClick = function (lecturer) {
 				$scope.lecturerName = lecturer;
+			}
+			
+			$scope.changePassword = function (oldPassword, newPassword, confirmPassword) {
+				$scope.errors = {};
+				
+				var config = {
+					oldPassword: oldPassword,
+					newPassword: newPassword,
+					confirmPassword: confirmPassword
+				};
+				
+				function putChangePasswordCallback(isStatusOk, result) {
+					if (isStatusOk) {
+						alert("Password changed!");						
+					}
+					else {
+						$scope.errors = result.errors;
+					}
+				}
+				
+				httpService.putWithAuth("/api/change-password", config, putChangePasswordCallback);
+			}
+			
+			$scope.changePersonalInfo = function (firstname, lastname, email) {
+				$scope.errors = {};
+				
+				var config = {
+					firstname: firstname,
+					lastname: lastname,
+					email: email
+				};
+				
+				function putChangePersonalInfoCallback(isStatusOk, result) {
+					if (isStatusOk) {
+						alert("personal info changed!");						
+					}
+					else {
+						$scope.errors = result.errors;
+					}
+				}
+				
+				httpService.putWithAuth("/api/change-personal-info", config, putChangePersonalInfoCallback);
 			}
 			
 			$scope.listLevelClassifiers = function () {

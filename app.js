@@ -78,6 +78,12 @@ Promise.resolve(orm).then(function(instance) {
 	
 	var initNextSlideService = require('./services/slide/next-slide.service');
 	initNextSlideService(app, instance.sequelize, instance.models);
+	
+	var initChangePasswordService = require('./services/user/change-password.service');
+	initChangePasswordService(app, instance.sequelize, instance.models);
+	
+	var initChangePersonalInfoService = require('./services/user/change-personal-info.service');
+	initChangePersonalInfoService(app, instance.sequelize, instance.models);
 });
 
 

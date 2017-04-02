@@ -20,7 +20,7 @@ module.exports = function (app, sequelize, models) {
 					userId: user.id
 				},
 				include: [
-					{ model: models.Topic, include: [ { model: models.Slide } ] }
+					{ model: models.Topic, where: { isPublished: true }, required: false, include: [ { model: models.Slide, where: { isPublished: true }, required: false } ] }
 				],
 				order: [
 					[ models.Topic, 'sequenceNumber', 'ASC' ],
@@ -33,10 +33,10 @@ module.exports = function (app, sequelize, models) {
 					model.errors = errorDictionary;
 					return res.status(400).json(model);
 				}
-				
+
 				var callbackIterator = 0;
 				models.Topic
-				.findAll({ where: { lessonId: userLessonHistory.Topic.lessonId }, include: [ { model: models.UserLessonHistory, where: { userId: user.id } } ] })
+				.findAll({ where: { isPublished: true, lessonId: userLessonHistory.Topic.lessonId }, include: [ { model: models.UserLessonHistory, where: { userId: user.id } } ] })
 				.then(function(topics) {
 					if (topics.length > 1) {
 						console.log("sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss" + JSON.stringify(topics));

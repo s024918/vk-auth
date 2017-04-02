@@ -22,7 +22,7 @@ module.exports = function (app, sequelize, models) {
 					{ model: models.Level },
 					{ model: models.ProgrammingLanguage },
 					{ model: models.User },
-					{ model: models.Topic, where: { isPublished: true }, include: [ { model: models.Slide }, { model: models.UserLessonHistory, where: { userId: user.id }, required: false } ] }
+					{ model: models.Topic, where: { isPublished: true }, include: [ { model: models.Slide, where: { isPublished: true } }, { model: models.UserLessonHistory, where: { userId: user.id }, required: false } ] }
 				],
 				order: [
 					[ models.Topic, 'sequenceNumber', 'ASC' ],
@@ -73,9 +73,11 @@ module.exports = function (app, sequelize, models) {
 										}
 									}
 									
-									if (topic.Slides.find(o => o.id === userLessonHistory.slideId).sequenceNumber > topic.Slides[0].sequenceNumber) {
-										topicDto.userSlidesLength = topic.Slides.find(o => o.id === userLessonHistory.slideId).sequenceNumber;
-										topicDto.isEnabled = true;
+									if (topic.Slides.find(o => o.id === userLessonHistory.slideId)) {
+										if (topic.Slides.find(o => o.id === userLessonHistory.slideId).id > topic.Slides[0].id) {
+											topicDto.userSlidesLength = topic.Slides.indexOf(topic.Slides.find(o => o.id === userLessonHistory.slideId)) + 1;
+											topicDto.isEnabled = true;
+										}
 									}
 								}
 							}

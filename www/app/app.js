@@ -1,13 +1,16 @@
 'use strict';
 
-var app = angular.module('vk-auth', ['ngRoute', 'ui.bootstrap', 'LocalStorageModule']);
+var app = angular.module('vk-auth', ['ngRoute', 'ui.bootstrap', 'LocalStorageModule', 'hljs']);
 
 app.run(["$rootScope", "localStorageService", function ($rootScope, localStorageService) {
     $rootScope.user = localStorageService.get('vk-auth');
 }]);
 
-app.config(['$routeProvider', '$locationProvider', '$httpProvider', function ($routeProvider, $locationProvider, $httpProvider) {
+app.config(['$routeProvider', '$locationProvider', '$httpProvider', 'hljsServiceProvider', function ($routeProvider, $locationProvider, $httpProvider, hljsServiceProvider) {
 	$httpProvider.defaults.headers.delete = { 'Content-Type' : 'application/json' };
+	hljsServiceProvider.setOptions({
+		tabReplace: '    '
+	});
 	
     $routeProvider.when("/", {
         controller: "HomeCtrl",

@@ -37,7 +37,25 @@ module.exports = function (app, sequelize, models) {
 					model.errors = errorDictionary;
 					return res.status(400).json(model);
 				}
-
+				
+				// Form new sequence before deleting entry
+				// No more need this logic
+				var topics = lesson.Topics.filter(function(el) {
+					return el.id !== param.topicId;
+				});
+				
+				for (var i = 0; i < topics.length; i++) {
+					models.Topic
+					.update({
+						sequenceNumber: i + 1
+					}, {
+						where: {
+							id: topics[i].id,
+							lessonId: param.lessonId
+						}
+					});
+				}
+				
 				models.Topic
 				.destroy({
 					where: {

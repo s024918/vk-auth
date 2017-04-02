@@ -21,6 +21,9 @@ module.exports = function (app, sequelize, models) {
 				},
 				include: [
 					{ model: models.Topic, where: { id: param.topicId }, include: [ { model: models.Slide } ] }
+				],
+				order: [
+					[ models.Topic, models.Slide, 'sequenceNumber', 'ASC' ]
 				]
 			})
 			.then(function(lesson) {
@@ -38,7 +41,24 @@ module.exports = function (app, sequelize, models) {
 					model.errors = errorDictionary;
 					return res.status(400).json(model);
 				}
-
+				
+				// Form new sequence before deleting entry
+				var slides = lesson.Topics[0].Slides.filter(function(el) {
+					return el.id !== param.slideId;
+				});
+				
+				for (var i = 0; i < slides.length; i++) {
+					models.Slide
+					.update({
+						sequenceNumber: i + 1
+					}, {
+						where: {
+							topicId: lesson.Topics[0].id,
+							id: slides[i].id
+						}
+					});
+				}
+				
 				models.Slide
 				.destroy({
 					where: {

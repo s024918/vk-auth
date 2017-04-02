@@ -36,6 +36,18 @@ module.exports = function (app, sequelize, models) {
 				.findAll({ where: { lessonId: topic.lessonId }, include: [ { model: models.UserLessonHistory, where: { userId: user.id } } ] })
 				.then(function(topics) {
 					currentActiveSlideId = topics.find(o => o.id == param.topicId).UserLessonHistories[0].slideId;
+					if (!topic.Slides.find(o => o.id == currentActiveSlideId)) {
+						// Because Lecturer deleted or unpublished user current slide in which he stopt last time and since we have no history about further possible lecturer modifications then currentActiveSlide is set to default.
+						models.UserLessonHistory
+							.update({
+								slideId: topic.Slides[0].id
+							}, {
+								where: {
+									slideId: currentActiveSlideId
+								}
+							});
+							currentActiveSlideId = topic.Slides[0].id;
+					}
 					isCurrentActiveTopicFinished = topics.find(o => o.id == param.topicId).UserLessonHistories[0].isTopicFinished;
 					
 					if (topics.length > 1) {

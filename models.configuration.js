@@ -1,4 +1,5 @@
 module.exports = function (instance) {
+	instance.models.User.belongsTo(instance.models.Role, { foreignKey: 'roleId' });
 	instance.models.Lesson.belongsTo(instance.models.Level, { foreignKey: 'levelId' });
 	instance.models.Lesson.belongsTo(instance.models.ProgrammingLanguage, { foreignKey: 'programmingLanguageId' });
 	instance.models.Lesson.belongsTo(instance.models.User, { foreignKey: 'userId' });

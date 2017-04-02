@@ -21,7 +21,7 @@ module.exports = function (app, sequelize, models) {
 				models.Level,
 				models.ProgrammingLanguage,
 				models.User,
-				{ model: models.Topic, include: [ models.Slide, { model: models.UserLessonHistory, where: { userId: user.id }, required: false } ] }
+				{ model: models.Topic, where: { isPublished: true }, include: [ { model: models.Slide, where: { isPublished: true } }, { model: models.UserLessonHistory, where: { userId: user.id }, required: false } ] }
 				]
 			})
 			.then(function(lessons) {
@@ -96,6 +96,24 @@ module.exports = function (app, sequelize, models) {
 
 				res.json(model);
 			});
+		}
+		
+		soapClientAuthService(req.query, model, models, soapClientCallback);
+	});
+	
+	app.get('/api/profile-main', function(req, res) {
+		var model = {};
+		
+		var soapClientCallback = function (param, user) {
+			if (!user) {
+				// TODO: 401 error
+				return res.json(null);
+			}
+			
+			model.userData.createdAt = user.createdAt;
+			model.userData.email = user.email;
+
+			res.json(model);
 		}
 		
 		soapClientAuthService(req.query, model, models, soapClientCallback);

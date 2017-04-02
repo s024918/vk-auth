@@ -10,7 +10,8 @@ module.exports = function(sequelize, DataTypes) {
 		firstname: DataTypes.STRING,
 		lastname: DataTypes.STRING,
 		email: DataTypes.STRING,
-		password: DataTypes.STRING
+		password: DataTypes.STRING,
+		createdAt: DataTypes.DATE
 	});
 	
 	return User;

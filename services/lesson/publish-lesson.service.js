@@ -1,6 +1,5 @@
 var soapClientAuthService = require(__dirname + '/../auth/auth-client.service');
 var constants = require(__dirname + '/../../app.constants');
-var jwt = require('jsonwebtoken');
 
 module.exports = function (app, sequelize, models) {
 	app.put('/api/publish-lesson', function(req, res) {
@@ -29,7 +28,7 @@ module.exports = function (app, sequelize, models) {
 					model.errors = errorDictionary;
 					return res.status(400).json(model);
 				}
-				console.log("Hiustonai? " + JSON.stringify(topics));
+
 				models.Lesson
 				.update({
 					isPublished: param.publishState
